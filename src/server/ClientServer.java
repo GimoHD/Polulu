@@ -17,11 +17,11 @@ public class ClientServer {
 
     public void makeJson() {
 
-        innerObject.put("mode", "1"); //0 - stop   1 - manual   2 - start
-        innerObject.put("up", "0.8");
-        innerObject.put("down", "0.9");
-        innerObject.put("left", "0.5");
-        innerObject.put("right", "0.4");
+        innerObject.put("mode", "0"); //0 - stop   1 - start   2 - battery
+        innerObject.put("up", "0");
+        innerObject.put("down", "0");
+        innerObject.put("left", "1");
+        innerObject.put("right", "0");
         System.out.println(innerObject.toString());
 
     }
@@ -30,6 +30,7 @@ public class ClientServer {
 
     public ClientServer() {
         makeJson();
+       connect();
 
     }
 
@@ -53,6 +54,7 @@ public class ClientServer {
 
 
     public void sendMessage(String string){
+        System.out.println(string);
         out.println(string);
     }
 

@@ -13,6 +13,8 @@ import timer.Timing;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.KeyEvent;
+import java.awt.event.KeyListener;
 import java.util.ArrayList;
 
 import javax.swing.*;
@@ -26,8 +28,12 @@ public class GUI extends JFrame {
     ClientServer client;
     drawPanel p;
     ArrayList<Node> nodes;
+    ArrayList<Integer> simGereden;
 
     public GUI() {
+        client = new ClientServer();
+        list = new ArrayList();
+        simGereden = new ArrayList<Integer>();
         this.setSize(500, 300);
         this.setVisible(true);
         this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -138,7 +144,13 @@ public class GUI extends JFrame {
 
             public void actionPerformed(ActionEvent e) {
 
-                new Update().start();
+                JSONObject innerObject = new JSONObject();
+                innerObject.put("mode", "0"); //0 - stop   1 - start   2 - battery
+                innerObject.put("up", "0");
+                innerObject.put("down", "0");
+                innerObject.put("left", "1");
+                innerObject.put("right", "0");
+                client.sendMessage(innerObject.toString());
             }
         });
         a.add(button);
@@ -148,10 +160,13 @@ public class GUI extends JFrame {
 
         tabbedPane.addTab("Tab1", scrollPane);
         tabbedPane.addTab("Tab2", a);
+        tabbedPane.setFocusable(false);
        scrollPane.setFocusable(false);
-        a.setFocusable(true);
+        a.setFocusable(false);
         this.getContentPane().add(tabbedPane, BorderLayout.CENTER);
-        p = new drawPanel();
+        p = new drawPanel(client);
+        p.setFocusable(true);
+        p.setRequestFocusEnabled(true);
 
         p.setLayout(new GridLayout(1, 1));
         p.setPreferredSize(new Dimension(500, 500));
@@ -161,8 +176,7 @@ public class GUI extends JFrame {
         this.setLocationRelativeTo(null);
         p.repaint();
 
-        client = new ClientServer();
-        list = new ArrayList();
+
         //Update update = new Update();
         //update.start();
 
@@ -171,10 +185,12 @@ public class GUI extends JFrame {
 
     Timing timer = new Timing(50000);
 
+
     public class Simulate extends Thread {
         public void run() {
             while (true) {
                 Object dataValues[] = {"N/A", "N/A", "N/A"};
+
 
                 tableModel.addRow(dataValues);
                 Timing timer = new Timing(50000);
@@ -196,6 +212,8 @@ public class GUI extends JFrame {
                     }
                     if (nodes.get(i) instanceof BasisStation) {
                         dataValues[2] = timer.toElapsedString();
+                        simGereden.add((int) (long)timer.getElapsed());
+
                         tableModel.setValueAt(dataValues[2], tableModel.getRowCount() - 1, 2);
                         table.repaint();
                     }
@@ -207,11 +225,11 @@ public class GUI extends JFrame {
                     int deltaX = x2 - x1;
                     int deltaY = y2 - y1;
                     if (deltaX != 0) {
-                        System.out.println(deltaX + "y" + deltaY);
+                        //System.out.println(deltaX + "y" + deltaY);
                         float slope = (float) (deltaY) / (deltaX);
                         int xtemp = 0;
                         int ytemp = 0;
-                        int random = Random.nextInt(5, 25);
+                        int random = Random.nextInt(5, 13);
                         double adding = 1;
                         if (Math.abs(deltaY)>Math.abs(deltaX)){
                             adding = 0.2;
@@ -223,8 +241,8 @@ public class GUI extends JFrame {
                                 xtemp = (int) -x;
                             ytemp = (int) (slope * (xtemp) - y1);
                             ytemp = -ytemp;
-                            System.out.println(slope + "lol" + xtemp + "    " + ytemp);
-                            p.drawNode(p.getGraphics(), nodes.get(i).getX() - xtemp, ytemp, random);
+                            //System.out.println(slope + "lol" + xtemp + "    " + ytemp);
+                            p.drawNode(p.getGraphics(), nodes.get(i).getX() - xtemp, ytemp, random,simGereden.size(),average(),5);
 
                         }
 
@@ -233,14 +251,27 @@ public class GUI extends JFrame {
                 }
             }
         }
+
     }
 
+
+    public Integer average(){
+        Integer sum = 0;
+        if (!simGereden.isEmpty()){
+            for(Integer l : simGereden){
+                sum += l;
+            }return sum/ simGereden.size();
+        }return sum;
+    }
     Object dataValues[] = {"0", "0", "0"};
 
     public void update() {
         tableModel.addRow(dataValues);
         table.repaint();
     }
+int time;
+    int id;
+    float energy;
 
     public class Update extends Thread {
         public void run() {
@@ -248,9 +279,9 @@ public class GUI extends JFrame {
                 String received = client.receiveMessage();
                 if (received != null) {
                     JSONObject lol = new JSONObject(received);
-                    lol.get("time");
-                    lol.get("id");
-                    lol.get("energy");
+                     time = (Integer) lol.get("time");
+                     id = (Integer)lol.get("id");
+                    energy = (Float) lol.get("energy");
                     System.out.println();
                 }
             }
