@@ -143,14 +143,7 @@ public class GUI extends JFrame {
         button2.addActionListener(new ActionListener() {
 
             public void actionPerformed(ActionEvent e) {
-
-                JSONObject innerObject = new JSONObject();
-                innerObject.put("mode", "0"); //0 - stop   1 - start   2 - battery
-                innerObject.put("up", "0");
-                innerObject.put("down", "0");
-                innerObject.put("left", "1");
-                innerObject.put("right", "0");
-                client.sendMessage(innerObject.toString());
+new Update().start();
             }
         });
         a.add(button);
@@ -270,18 +263,44 @@ public class GUI extends JFrame {
         table.repaint();
     }
 int time;
-    int id;
     float energy;
 
     public class Update extends Thread {
         public void run() {
+            timer = new Timing(50000);
+            simGereden = new ArrayList<Integer>();
             while (true) {
+                //System.out.println("receiving");
+
                 String received = client.receiveMessage();
+                Object dataValues[] = {"N/A", "N/A", "N/A"};
+                tableModel.addRow(dataValues);
+
+
                 if (received != null) {
                     JSONObject lol = new JSONObject(received);
                      time = (Integer) lol.get("time");
-                     id = (Integer)lol.get("id");
                     energy = (Float) lol.get("energy");
+
+                    if (time == 1) {
+                        dataValues[0] = timer.toElapsedString();
+
+                        tableModel.setValueAt(dataValues[0], tableModel.getRowCount() - 1, 0);
+                        table.repaint();
+                    } else if (time ==2) {
+                        dataValues[1] = timer.toElapsedString();
+
+                        tableModel.setValueAt(dataValues[1], tableModel.getRowCount() - 1, 1);
+                        table.repaint();
+                    }else if (time == 3) {
+                        dataValues[2] = timer.toElapsedString();
+                        simGereden.add((int) (long) timer.getElapsed());
+                        tableModel.setValueAt(dataValues[2], tableModel.getRowCount() - 1, 2);
+                        table.repaint();
+                        timer = new Timing(50000);
+                    }
+                    p.drawNode(p.getGraphics(),0, 0, Random.nextInt(5,5),simGereden.size(),average(),energy);
+
                     System.out.println();
                 }
             }

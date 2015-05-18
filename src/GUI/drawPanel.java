@@ -34,7 +34,7 @@ public class drawPanel extends JPanel implements KeyListener {
             g.drawImage(img1, 0, 0, this);
         }
 int gereden = 0;
-    public void drawNode(Graphics g, int x,int y, int sleep, int gereden, int gemiddeld, int batterij){
+    public void drawNode(Graphics g, int x,int y, int sleep, int gereden, int gemiddeld, float batterij){
         //this.repaint();
 if (this.gereden != gereden) {
     this.gereden = gereden;
