@@ -1,20 +1,15 @@
 package GUI;
 
-import com.sun.security.ntlm.Client;
-import org.json.JSONObject;
-import server.BasisStation;
+import server.stations.BasisStation;
 import server.ClientServer;
-import server.Node;
-import server.TussenStation;
+import server.stations.Node;
+import server.stations.TussenStation;
 import timer.Random;
-import timer.Time;
 import timer.Timing;
 
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.awt.event.KeyEvent;
-import java.awt.event.KeyListener;
 import java.util.ArrayList;
 
 import javax.swing.*;

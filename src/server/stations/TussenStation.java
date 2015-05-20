@@ -1,4 +1,4 @@
-package server;
+package server.stations;
 
 /**
  * Created by Kristof on 6/05/2015.

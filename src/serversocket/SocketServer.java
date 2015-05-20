@@ -1,8 +1,5 @@
 package serversocket;
 
-import jdk.net.Sockets;
-import server.BasisStation;
-import server.TussenStation;
 import timer.Random;
 import timer.Timing;
 
