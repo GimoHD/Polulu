@@ -39,7 +39,7 @@ public class GUI extends JFrame {
         this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
         this.getContentPane().setLayout(new BorderLayout());
-        String col[] = {"Basisstation 1", "Tussenstation 1", "Tussenstation 2"};
+        String col[] = {"Tussenstation 1", "Tussenstation 2","Basisstation 1"};
         tableModel = new DefaultTableModel(col, 0);
         nodes = new ArrayList<Node>();
         nodes.add(new Node(170, 205));
@@ -143,7 +143,8 @@ public class GUI extends JFrame {
         button2.addActionListener(new ActionListener() {
 
             public void actionPerformed(ActionEvent e) {
-new Update().start();
+                tableModel.addRow(dataValues);
+                new Update().start();
             }
         });
         a.add(button);
@@ -235,7 +236,7 @@ new Update().start();
                             ytemp = (int) (slope * (xtemp) - y1);
                             ytemp = -ytemp;
                             //System.out.println(slope + "lol" + xtemp + "    " + ytemp);
-                            p.drawNode(p.getGraphics(), nodes.get(i).getX() - xtemp, ytemp, random,simGereden.size(),average(),5);
+                            p.drawNode(p.getGraphics(), nodes.get(i).getX() - xtemp, ytemp, random,simGereden.size(),average(),"5");
 
                         }
 
@@ -262,44 +263,64 @@ new Update().start();
         tableModel.addRow(dataValues);
         table.repaint();
     }
-int time;
-    float energy;
+String time;
+    String energy;
 
     public class Update extends Thread {
         public void run() {
+
             timer = new Timing(50000);
             simGereden = new ArrayList<Integer>();
             while (true) {
                 //System.out.println("receiving");
-
                 String received = client.receiveMessage();
-                Object dataValues[] = {"N/A", "N/A", "N/A"};
-                tableModel.addRow(dataValues);
-
-
                 if (received != null) {
-                    JSONObject lol = new JSONObject(received);
-                     time = (Integer) lol.get("time");
-                    energy = (Float) lol.get("energy");
+                    System.out.println(received);
+                }
+                Object dataValues[] = {"N/A", "N/A", "N/A"};
+int x = 0;
+                int y = 0;
 
-                    if (time == 1) {
+                if (received != null && received != "") {
+                    //StringBuilder stringetje = new StringBuilder();
+//                    received = received.split("a")[1];
+                    //stringetje.append("{");
+                   // stringetje.append(received);
+                   // System.out.println(stringetje);
+                    //JSONObject lol = new JSONObject(stringetje);
+                   //  time = (String) lol.get("time");
+                   // energy = (String) lol.get("energy");
+String data[] = received.split(" ");
+                   time = data[1];
+                   energy = data[2];
+                    // System.out.println(stringetje);
+
+                    if (time.equals("1")) {
+                        System.out.println("Time = 1");
+
                         dataValues[0] = timer.toElapsedString();
-
+                        x= 394;
+                        y = 47;
                         tableModel.setValueAt(dataValues[0], tableModel.getRowCount() - 1, 0);
                         table.repaint();
-                    } else if (time ==2) {
+                    } else if (time.equals("2")) {
                         dataValues[1] = timer.toElapsedString();
-
+                        x= 72;
+                        y = 92;
                         tableModel.setValueAt(dataValues[1], tableModel.getRowCount() - 1, 1);
                         table.repaint();
-                    }else if (time == 3) {
+                    }else if (time.equals("3")) {
                         dataValues[2] = timer.toElapsedString();
                         simGereden.add((int) (long) timer.getElapsed());
                         tableModel.setValueAt(dataValues[2], tableModel.getRowCount() - 1, 2);
+                        dataValues[2] = "N/A";
+                        x= 170;
+                        y = 205;
+                        tableModel.addRow(dataValues);
                         table.repaint();
                         timer = new Timing(50000);
                     }
-                    p.drawNode(p.getGraphics(),0, 0, Random.nextInt(5,5),simGereden.size(),average(),energy);
+                    p.drawNode(p.getGraphics(), x, y, Random.nextInt(5, 5), simGereden.size(), average(),energy);
 
                     System.out.println();
                 }

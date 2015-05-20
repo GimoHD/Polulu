@@ -26,11 +26,13 @@ public class ClientServer {
 
     }
 
-    String host = "192.168.0.100";
+   String host = "192.168.1.103";
+    //String host = "localhost";
 
     public ClientServer() {
         makeJson();
        connect();
+        //new Update().start();
 
     }
 
@@ -49,9 +51,22 @@ public class ClientServer {
             System.err.println("Couldn't get I/O for the connection to: " + host);
             System.exit(1);
         }
-        System.out.println("echo: " + serverReply);
+       // System.out.println("echo: " + serverReply);
     }
+    public class Update extends Thread {
+        public void run() {
+            while (true) {
+                try {
+                    if (in.readLine() != null) {
+                        serverReply = in.readLine();
+                        System.out.println("" + serverReply);
+                    }
+                } catch (Exception e) {
 
+                }
+            }
+        }
+    }
 
     public void sendMessage(String string){
         System.out.println(string);
@@ -62,11 +77,11 @@ public class ClientServer {
         try {
             if (in.readLine() !=null) {
                 serverReply = in.readLine();
-                System.out.println("echo: " + serverReply);
                 return serverReply;
             }
         } catch (IOException e) {
-            return null;
+            System.out.println(e.getMessage());
+
        }
         return null;
     }

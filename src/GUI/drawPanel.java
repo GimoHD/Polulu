@@ -34,7 +34,7 @@ public class drawPanel extends JPanel implements KeyListener {
             g.drawImage(img1, 0, 0, this);
         }
 int gereden = 0;
-    public void drawNode(Graphics g, int x,int y, int sleep, int gereden, int gemiddeld, float batterij){
+    public void drawNode(Graphics g, int x,int y, int sleep, int gereden, int gemiddeld, String batterij){
         //this.repaint();
 if (this.gereden != gereden) {
     this.gereden = gereden;
@@ -62,23 +62,48 @@ if (this.gereden != gereden) {
     public void keyTyped(KeyEvent e) {
         System.out.println("lel");
         mode = 0;
-        if (e.getKeyChar() == KeyEvent.VK_M){
-            mode = 1;
-            innerObject.put("mode", mode); //0 - stop   1 - manual   2 - start
-            innerObject.put("up", up);
-            innerObject.put("down", down);
-            innerObject.put("left", left);
-            innerObject.put("right", right);
+        if (e.getKeyChar() == KeyEvent.VK_Z){
+            innerObject.put("mode",""+ 0); //0 - stop   1 - manual   2 - start
+            innerObject.put("up",""+ 1);
+            innerObject.put("down",""+ 0);
+            innerObject.put("left",""+ 0);
+            innerObject.put("right",""+ 0);
             System.out.println(innerObject.toString());
             server.sendMessage(innerObject.toString());
-        }if (e.getKeyChar() == KeyEvent.VK_DOWN){
-            down = 1;
-        }if (e.getKeyChar() == KeyEvent.VK_LEFT){
-            left = 1;
-        }if (e.getKeyChar() == KeyEvent.VK_RIGHT){
-            right = 1;
-        }if (e.getKeyChar() == KeyEvent.VK_SPACE){
+            //server.sendMessage("1");
+        }if (e.getKeyChar() == KeyEvent.VK_S){
 
+            innerObject.put("mode",""+ 0); //0 - stop   1 - manual   2 - start
+            innerObject.put("up",""+ 0);
+            innerObject.put("down",""+ 1);
+            innerObject.put("left",""+ 0);
+            innerObject.put("right", "" + 0);
+            System.out.println(innerObject.toString());
+            server.sendMessage(innerObject.toString());
+        }if (e.getKeyChar() == KeyEvent.VK_Q){
+            innerObject.put("mode",""+ 0); //0 - stop   1 - manual   2 - start
+            innerObject.put("up",""+ 0);
+            innerObject.put("down",""+ 0);
+            innerObject.put("left",""+ 1);
+            innerObject.put("right",""+ 0);
+            System.out.println(innerObject.toString());
+            server.sendMessage(innerObject.toString());
+        }if (e.getKeyChar() == KeyEvent.VK_D){
+            innerObject.put("mode",""+ 0); //0 - stop   1 - manual   2 - start
+            innerObject.put("up",""+ 0);
+            innerObject.put("down",""+0);
+            innerObject.put("left",""+ 0);
+            innerObject.put("right",""+ 1);
+            System.out.println(innerObject.toString());
+            server.sendMessage(innerObject.toString());
+        }if (e.getKeyChar() == KeyEvent.VK_SPACE){
+            innerObject.put("mode",""+ 1); //0 - stop   1 - manual   2 - start
+            innerObject.put("up",""+ 0);
+            innerObject.put("down",""+ 0);
+            innerObject.put("left",""+ 0);
+            innerObject.put("right",""+ 0);
+            System.out.println(innerObject.toString());
+            server.sendMessage(innerObject.toString());
         }if (e.getKeyChar() == KeyEvent.VK_S){
 
         }
