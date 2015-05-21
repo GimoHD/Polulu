@@ -3,18 +3,20 @@ package serversocket;
 import timer.Random;
 import timer.Timing;
 
-import java.net.*;
-import java.io.*;
+import java.io.IOException;
+import java.io.PrintWriter;
+import java.net.ServerSocket;
+import java.net.Socket;
 
 public class SocketServer {
 
     public SocketServer() throws IOException {
-        
+
         ServerSocket serverSocket = null;
 
         boolean listening = true;
-        
-         // een array voor referenties naar thread-objecten
+
+        // een array voor referenties naar thread-objecten
         int aantal = 0;
 
         try {
@@ -23,7 +25,7 @@ public class SocketServer {
             System.err.println("Could not listen on port: 4444.");
             System.exit(-1);
         }
-        
+
         System.out.println("Server draait");
         PrintWriter out = null;
         Socket clientSocket = null;
@@ -42,35 +44,34 @@ public class SocketServer {
                 out.println("start");
 
             }
-           // System.out.println("Gestart");
+            // System.out.println("Gestart");
             Object dataValues[] = {"N/A", "N/A", "N/A"};
             Timing timer = new Timing(50000);
             System.out.println("sending");
             try {
-                Thread.sleep(Random.nextInt(7000,9000));
+                Thread.sleep(Random.nextInt(7000, 9000));
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
             out.println(" 1 5\n");
             try {
-                Thread.sleep(Random.nextInt(7000,9000));
+                Thread.sleep(Random.nextInt(7000, 9000));
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
             out.println(" 2 5\n");
             try {
-                Thread.sleep(Random.nextInt(7000,9000));
+                Thread.sleep(Random.nextInt(7000, 9000));
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
             out.println(" 3 5\n");
 
         }
-	       
 
-       // serverSocket.close();
+
+        // serverSocket.close();
     }
-
 
 
 }

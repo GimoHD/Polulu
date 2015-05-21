@@ -1,8 +1,5 @@
 package serversocket;
 
-import GUI.GUI;
-
-import javax.swing.*;
 import java.io.IOException;
 
 /**

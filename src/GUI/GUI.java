@@ -1,29 +1,32 @@
 package GUI;
 
-import server.stations.BasisStation;
 import server.ClientServer;
+import server.stations.BasisStation;
 import server.stations.Node;
 import server.stations.TussenStation;
 import timer.Random;
 import timer.Timing;
 
+import javax.swing.*;
+import javax.swing.table.DefaultTableModel;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
 
-import javax.swing.*;
-import javax.swing.table.DefaultTableModel;
-
 public class GUI extends JFrame {
     JScrollPane scrollPane;
-    private JTable table;
     ArrayList list;
     DefaultTableModel tableModel;
     ClientServer client;
     drawPanel p;
     ArrayList<Node> nodes;
     ArrayList<Integer> simGereden;
+    Timing timer = new Timing(50000);
+    Object dataValues[] = {"0", "0", "0"};
+    String time;
+    String energy;
+    private JTable table;
 
     public GUI() {
         client = new ClientServer();
@@ -34,7 +37,7 @@ public class GUI extends JFrame {
         this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
         this.getContentPane().setLayout(new BorderLayout());
-        String col[] = {"Tussenstation 1", "Tussenstation 2","Basisstation 1"};
+        String col[] = {"Tussenstation 1", "Tussenstation 2", "Basisstation 1"};
         tableModel = new DefaultTableModel(col, 0);
         nodes = new ArrayList<Node>();
         nodes.add(new Node(170, 205));
@@ -150,7 +153,7 @@ public class GUI extends JFrame {
         tabbedPane.addTab("Tab1", scrollPane);
         tabbedPane.addTab("Tab2", a);
         tabbedPane.setFocusable(false);
-       scrollPane.setFocusable(false);
+        scrollPane.setFocusable(false);
         a.setFocusable(false);
         this.getContentPane().add(tabbedPane, BorderLayout.CENTER);
         p = new drawPanel(client);
@@ -172,8 +175,21 @@ public class GUI extends JFrame {
 
     }
 
-    Timing timer = new Timing(50000);
+    public Integer average() {
+        Integer sum = 0;
+        if (!simGereden.isEmpty()) {
+            for (Integer l : simGereden) {
+                sum += l;
+            }
+            return sum / simGereden.size();
+        }
+        return sum;
+    }
 
+    public void update() {
+        tableModel.addRow(dataValues);
+        table.repaint();
+    }
 
     public class Simulate extends Thread {
         public void run() {
@@ -201,7 +217,7 @@ public class GUI extends JFrame {
                     }
                     if (nodes.get(i) instanceof BasisStation) {
                         dataValues[2] = timer.toElapsedString();
-                        simGereden.add((int) (long)timer.getElapsed());
+                        simGereden.add((int) (long) timer.getElapsed());
 
                         tableModel.setValueAt(dataValues[2], tableModel.getRowCount() - 1, 2);
                         table.repaint();
@@ -220,18 +236,18 @@ public class GUI extends JFrame {
                         int ytemp = 0;
                         int random = Random.nextInt(5, 13);
                         double adding = 1;
-                        if (Math.abs(deltaY)>Math.abs(deltaX)){
+                        if (Math.abs(deltaY) > Math.abs(deltaX)) {
                             adding = 0.2;
                         }
 
-                        for (double x = 0; x < Math.abs(deltaX); x=x+adding) {
+                        for (double x = 0; x < Math.abs(deltaX); x = x + adding) {
                             xtemp = (int) x;
                             if (x1 < x2)
                                 xtemp = (int) -x;
                             ytemp = (int) (slope * (xtemp) - y1);
                             ytemp = -ytemp;
                             //System.out.println(slope + "lol" + xtemp + "    " + ytemp);
-                            p.drawNode(p.getGraphics(), nodes.get(i).getX() - xtemp, ytemp, random,simGereden.size(),average(),"5");
+                            p.drawNode(p.getGraphics(), nodes.get(i).getX() - xtemp, ytemp, random, simGereden.size(), average(), "5");
 
                         }
 
@@ -242,24 +258,6 @@ public class GUI extends JFrame {
         }
 
     }
-
-
-    public Integer average(){
-        Integer sum = 0;
-        if (!simGereden.isEmpty()){
-            for(Integer l : simGereden){
-                sum += l;
-            }return sum/ simGereden.size();
-        }return sum;
-    }
-    Object dataValues[] = {"0", "0", "0"};
-
-    public void update() {
-        tableModel.addRow(dataValues);
-        table.repaint();
-    }
-String time;
-    String energy;
 
     public class Update extends Thread {
         public void run() {
@@ -273,49 +271,49 @@ String time;
                     System.out.println(received);
                 }
                 Object dataValues[] = {"N/A", "N/A", "N/A"};
-int x = 0;
+                int x = 0;
                 int y = 0;
 
                 if (received != null && received != "") {
                     //StringBuilder stringetje = new StringBuilder();
 //                    received = received.split("a")[1];
                     //stringetje.append("{");
-                   // stringetje.append(received);
-                   // System.out.println(stringetje);
+                    // stringetje.append(received);
+                    // System.out.println(stringetje);
                     //JSONObject lol = new JSONObject(stringetje);
-                   //  time = (String) lol.get("time");
-                   // energy = (String) lol.get("energy");
-String data[] = received.split(" ");
-                   time = data[1];
-                   energy = data[2];
+                    //  time = (String) lol.get("time");
+                    // energy = (String) lol.get("energy");
+                    String data[] = received.split(" ");
+                    time = data[1];
+                    energy = data[2];
                     // System.out.println(stringetje);
 
                     if (time.equals("1")) {
                         System.out.println("Time = 1");
 
                         dataValues[0] = timer.toElapsedString();
-                        x= 394;
+                        x = 394;
                         y = 47;
                         tableModel.setValueAt(dataValues[0], tableModel.getRowCount() - 1, 0);
                         table.repaint();
                     } else if (time.equals("2")) {
                         dataValues[1] = timer.toElapsedString();
-                        x= 72;
+                        x = 72;
                         y = 92;
                         tableModel.setValueAt(dataValues[1], tableModel.getRowCount() - 1, 1);
                         table.repaint();
-                    }else if (time.equals("3")) {
+                    } else if (time.equals("3")) {
                         dataValues[2] = timer.toElapsedString();
                         simGereden.add((int) (long) timer.getElapsed());
                         tableModel.setValueAt(dataValues[2], tableModel.getRowCount() - 1, 2);
                         dataValues[2] = "N/A";
-                        x= 170;
+                        x = 170;
                         y = 205;
                         tableModel.addRow(dataValues);
                         table.repaint();
                         timer = new Timing(50000);
                     }
-                    p.drawNode(p.getGraphics(), x, y, Random.nextInt(5, 5), simGereden.size(), average(),energy);
+                    p.drawNode(p.getGraphics(), x, y, Random.nextInt(5, 5), simGereden.size(), average(), energy);
 
                     System.out.println();
                 }
