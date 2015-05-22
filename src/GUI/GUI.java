@@ -130,14 +130,14 @@ public class GUI extends JFrame {
 
         JTabbedPane tabbedPane = new JTabbedPane(JTabbedPane.TOP);
         JPanel a = new JPanel();
-        JButton button = new JButton();
+        JButton button = new JButton("Hardcode simulatie");
         button.addActionListener(new ActionListener() {
 
             public void actionPerformed(ActionEvent e) {
                 new Simulate().start();
             }
         });
-        JButton button2 = new JButton();
+        JButton button2 = new JButton("Simulatie server");
         button2.addActionListener(new ActionListener() {
 
             public void actionPerformed(ActionEvent e) {
